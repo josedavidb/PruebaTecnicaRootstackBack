@@ -82,3 +82,14 @@ class GrillImage(models.Model):
 
     grill = models.ForeignKey(Grill, on_delete=models.CASCADE)
     image = models.ImageField()
+
+class Booking(models.Model):
+    '''
+	Represent a grill reservation for user
+	'''
+
+    grill = models.ForeignKey(Grill, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
+    hour_start = models.TimeField()
+    hour_end = models.TimeField()
