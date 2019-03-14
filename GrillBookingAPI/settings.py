@@ -81,8 +81,15 @@ WSGI_APPLICATION = 'GrillBookingAPI.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
+try:
+    CUR_DOMAIN = os.environ.get('CUR_DOMAIN')
+except:
+    CUR_DOMAIN = 'default'
 
-DATABASES = {
+if CUR_DOMAIN == '' or CUR_DOMAIN is None:
+    CUR_DOMAIN ='default'
+
+DATABASES_LIST = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'grillbookingdb',
@@ -104,6 +111,8 @@ DATABASES = {
         }
     }
 }
+
+DATABASES = {'default': DATABASES_LIST[CUR_DOMAIN]}
 
 
 # Password validation
