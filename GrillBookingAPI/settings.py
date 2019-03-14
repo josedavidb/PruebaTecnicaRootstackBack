@@ -25,7 +25,7 @@ SECRET_KEY = '(0b52hez3f8(!0-a7yc!ou+17)696*%z(9*s_!*ge!-!_&@nds'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
+ALLOWED_HOSTS = ['grillbooking-api.herokuapp.com','localhost', '127.0.0.1', '*']
 
 
 # Application definition
