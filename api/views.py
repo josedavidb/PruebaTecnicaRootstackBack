@@ -34,9 +34,11 @@ class UserCreateAPIView(CreateAPIView):
     queryset = User.objects.all()
 
 class GrillListCreate(generics.ListCreateAPIView):
-	queryset = Grill.objects.all()
-	serializer_class = GrillSerializer
-	
+    queryset = Grill.objects.all()
+    serializer_class = GrillSerializer
+    
+    def perform_create(self,serializer): 
+        serializer.save(owner=self.request.user)
 
 class GrillRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Grill.objects.all()
@@ -52,8 +54,11 @@ class GrillImageRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
 	serializer_class = GrillImageSerializer
 
 class BookingListCreate(generics.ListCreateAPIView):
-	queryset = Booking.objects.all()
-	serializer_class = BookingSerializer
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    
+    def perform_create(self,serializer):
+        serializer.save(user=self.request.user)
 	
 
 class BookingRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
