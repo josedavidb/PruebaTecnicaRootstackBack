@@ -1,7 +1,9 @@
 Django==2.1.7
-psycopg2==2.7.7
-pytz==2018.9
-Django==2.1.7
+django-cors-headers==2.4.1
+django-rest-auth==0.9.3
+django-rest-framework==0.1.0
+djangorestframework==3.9.2
 Pillow==5.4.1
 psycopg2==2.7.7
 pytz==2018.9
+six==1.12.0
