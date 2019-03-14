@@ -91,6 +91,17 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': 5432,
 
+    },
+    'grillbooking-api': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'd4sa429h4uifg2',
+        'USER': 'jvsknvrabhnqjx',
+        'PASSWORD': '6148d7e8a67d87d14de46a1cf2c850bb09b78980ad7bb18e1dcaf6b186d22745',
+        'HOST': 'ec2-107-20-177-161.compute-1.amazonaws.com',
+        'PORT': '5432',
+        'OPTIONS': {
+            'connect_timeout': None,
+        }
     }
 }
 
