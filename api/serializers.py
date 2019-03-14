@@ -4,6 +4,7 @@ from rest_framework.serializers import (
     ModelSerializer,
     CharField,
     EmailField,
+    IntegerField,
     StringRelatedField,
 )
 from rest_framework.exceptions import ValidationError
@@ -16,6 +17,14 @@ User = get_user_model()
 
 #Serializer for user registration
 
+class UsernameSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'pk'
+        ]
+        
 class UserCreateSerializer(ModelSerializer):
 
     '''
@@ -25,6 +34,8 @@ class UserCreateSerializer(ModelSerializer):
     gender = serializers.CharField()
     confirm_email = serializers.CharField()
     confirm_password = serializers.CharField(write_only=True)
+    zip_code = serializers.IntegerField()
+
     class Meta:
         model = User
         fields = [
@@ -37,6 +48,7 @@ class UserCreateSerializer(ModelSerializer):
             'last_name',
             'birthdate',
             'gender',
+            'zip_code'
         ]
 
         #Variable to don't allow read password, write only
@@ -97,19 +109,27 @@ class UserCreateSerializer(ModelSerializer):
         )
         user_obj.set_password(password)
         user_obj.save()
+        print('Aja acabo de guardar el usuario')
         user_obj.profile.birthdate = validated_data['birthdate']
+        print('Aja acabo de guardar el birthdate')
         user_obj.profile.gender = validated_data['gender']
+        print('Aja acabo de guardar el genero')
+        user_obj.profile.zip_code = validated_data['zip_code']
+        print('Aja acabo de guardar el zip code')
         user_obj.save()
         return validated_data
 
 class GrillSerializer(serializers.ModelSerializer):
-	"""
-	Consist in the serializer of model Grill.
-	Fields that are going to pass: model, description, zip code, width, height, weight, color, owner
-	"""
-	class Meta:
-		model = Grill
-		fields = ('model','description','zip_code','width','height','weight','color','owner')
+    """
+    Consist in the serializer of model Grill.
+    Fields that are going to pass: model, description, zip code, width, height, weight, color, owner
+    """
+    owner = UsernameSerializer(required=False)
+
+    class Meta:
+        model = Grill
+        fields = ('pk','model','description','zip_code','width','height','weight','color','owner')
+        read_only_fields = ('owner',)
 
 class GrillImageSerializer(serializers.ModelSerializer):
 	"""
@@ -121,10 +141,33 @@ class GrillImageSerializer(serializers.ModelSerializer):
 		fields = ('grill','image')
 
 class BookingSerializer(serializers.ModelSerializer):
+    """
+    Consist in the serializer of model Booking.
+    Fields that are going to pass: grill, user, date, hour_start, hour_end
 	"""
-	Consist in the serializer of model Booking.
-	Fields that are going to pass: grill, user, date, hour_start, hour_end
-	"""
-	class Meta:
-		model = Booking
-		fields = ('grill','user','date','hour_start','hour_end')
+
+    class Meta:
+        model = Booking
+        fields = ('pk','grill','user','date','hour_start','hour_end')
+        read_only_fields = ('user',)
+    
+    def validate(self,data):
+        hour_start = data['hour_start']
+        hour_end = data['hour_end']
+        date = data['date']
+        grill = data['grill']
+        if hour_start > hour_end:
+            raise ValidationError('The hour start cant be higher than hour end') 
+        booking_qs1 = Booking.objects.filter(grill=grill,date=date, hour_start__lte = hour_end, hour_end__gte = hour_end)
+        booking_qs2 = Booking.objects.filter(grill=grill,date=date, hour_start__lte = hour_start, hour_end__gte = hour_start)
+        booking_qs3 = Booking.objects.filter(grill=grill,date=date, hour_start__gte = hour_start, hour_end__lte = hour_end)
+
+
+        booking_qs = booking_qs1 | booking_qs2 | booking_qs3
+        if booking_qs.exists():
+            raise ValidationError('The grill already reservated for that date and that specific hour')
+        return data
+    
+
+
+    

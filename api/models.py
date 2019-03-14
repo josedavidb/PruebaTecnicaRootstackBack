@@ -25,40 +25,15 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     bio = models.TextField(blank=True)
-    zip_code = models.IntegerField()
-    picture = models.ImageField()
-    birthdate = models.DateField()
+    zip_code = models.IntegerField(null=True)
+    picture = models.ImageField(null=True)
+    birthdate = models.DateField(null=True)
     gender = models.CharField(max_length=1,choices=GENDER_CHOICES,default='M')
 
     def __str__(self):
     	return str(self.user)
 
-# Triggers for Profile Model
 
-@receiver(post_save, sender=User)
-def create_profile_user(sender, instance, created, **kwargs):
-    '''
-    Create the profile associated with a user right after the user has been created.
-    '''
-    
-    if created:
-        Profile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    '''
-    Save the user profile associated with a User right after the user is saved,
-     after any change.
-    '''
-    instance.profile.save()
-
-@receiver(post_delete, sender=Profile)
-def delete_associated_entities_to_profile(sender, instance, **kwargs):
-    '''
-    Trigger to take charge of any entity associated 
-    with Profile after its elimination.
-    '''
-    pass 
 
 class Grill(models.Model):
 
@@ -93,3 +68,30 @@ class Booking(models.Model):
     date = models.DateField()
     hour_start = models.TimeField()
     hour_end = models.TimeField()
+
+# Triggers for Profile Model
+
+@receiver(post_save, sender=User)
+def create_profile_user(sender, instance, created, **kwargs):
+    '''
+    Create the profile associated with a user right after the user has been created.
+    '''
+    
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    '''
+    Save the user profile associated with a User right after the user is saved,
+     after any change.
+    '''
+    instance.profile.save()
+
+@receiver(post_delete, sender=Profile)
+def delete_associated_entities_to_profile(sender, instance, **kwargs):
+    '''
+    Trigger to take charge of any entity associated 
+    with Profile after its elimination.
+    '''
+    pass 

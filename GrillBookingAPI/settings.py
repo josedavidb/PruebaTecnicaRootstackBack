@@ -25,7 +25,7 @@ SECRET_KEY = '(0b52hez3f8(!0-a7yc!ou+17)696*%z(9*s_!*ge!-!_&@nds'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
 
 # Application definition
@@ -53,6 +53,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware'
 ]
 
 ROOT_URLCONF = 'GrillBookingAPI.urls'
@@ -145,11 +148,13 @@ REST_FRAMEWORK = {
 
 #Configuration for corsheaders
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ORIGIN_WHITELIST = (
-    'http://localhost:8100'
+    'http://localhost:8100',
+    'http://localhost:4200',
 )
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = (
     'DELETE',
